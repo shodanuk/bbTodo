@@ -1,0 +1,324 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>BB Todos</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+</head>
+<body>
+
+    <div id="wrapper" class="container-fluid">
+        <div class="row-fluid">
+            <aside class="span4 sidebar">
+                <div id="project-list">Please wait, loading...</div>
+            </aside>
+            <section class="span8 ">
+                <div id="current-project">Please wait, loading...</div>
+            </section>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var BTD = BTD || {};
+
+//        BTD.defaultProjects = [
+//            {
+//                "title"   : "Test project 1",
+//                "slug"    : "test-project-1",
+//                "todos"   : [
+//                    {
+//                        "body"        : "I am a todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "I am another todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "I am the last incomplete todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "I am a complete todo item",
+//                        "complete"    : true,
+//                        "date"        : new Date().toUTCString()
+//                    }
+//                ]
+//            },
+//            {
+//                "title"   : "Test project 2",
+//                "slug"    : "test-project-2",
+//                "todos"   : [
+//                    {
+//                        "body"        : "[proj 2] I am a todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "[proj 2] I am another todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "[proj 2] I am the last incomplete todo item",
+//                        "complete"    : false,
+//                        "date"        : new Date().toUTCString()
+//                    },
+//                    {
+//                        "body"        : "[proj 2] I am a complete todo item",
+//                        "complete"    : true,
+//                        "date"        : new Date().toUTCString()
+//                    }
+//                ]
+//            }
+//        ];
+    </script>
+
+    <!-- START Templates -->
+
+    <script type="text/template" id="tmpl-project">
+        {?title}
+            <header>
+                <a href="#project/update/{id}" class="btn btn-small update"><i class="icon-edit"></i></a>
+                <h1>{title}</h1>
+            </header>
+            {?todos}
+                <ul class='todo-list'></ul>
+            {:else}
+                <div class="alert">You currently have no todo items in this project. Is that a bad or good thing!?</div>
+            {/todos}
+        {:else}
+            <div class="alert">Please load a project from the list on the left.</div>
+        {/title}
+
+    </script>
+
+    <script type="text/template" id="tmpl-todo">
+        <i class="{?complete}icon-star{:else}icon-star-empty{/complete} status"></i>
+        <span class="body">{body}</span>
+        <time>({date})</time>
+        <a href="#project/delete/{id}" class="delete"><i class="icon-trash"></i></a>
+    </script>
+
+    <script type="text/template" id="tmpl-project-list">
+        <header>
+            <a href="#project/create" id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
+            <h1>Your projects</h1>
+        </header>
+
+        {?projects}
+            <ul>
+                {#projects}
+                <li>
+                    <a href="#project/show/{id}" class="project-link">{.title}</a>
+                    <a href="#project/delete/{id}" class="delete"><i class="icon-trash icon-white"></i></a>
+                </li>
+                {/projects}
+            </ul>
+        {:else}
+            <div class="alert">You don't currently have any projects</div>
+        {/projects}
+    </script>
+
+    <script type="text/template" id="tmpl-project-form">
+        <form method="get" accept-charset="utf-8">
+            <fieldset id="add-new-project">
+                <legend>Add new project</legend>
+
+                <label for="project-title">Title</label>
+                <input type="text" name="project-title" value="{title}" id="project-title">
+                <span class="help-inline"></span>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="reset" class="btn cancel">Cancel</button>
+                </div>
+            </fieldset>
+        </form>
+    </script>
+
+    <script type="text/template" id="tmpl-todo-form">
+        <form method="get" accept-charset="utf-8" class="form-inline well">
+            <input type="hidden" name="project-id" value="{project}" id="project_id">
+            <input type="text" name="todo-body" value="{body}" id="todo_body" placeholder="Enter a new todo item here" class="input-xlarge">&nbsp;
+            <!--<label class="checkbox inline"><input type="checkbox" value="1">Due date?</label>-->
+            <select name='due-day' class='span1'>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+            </select>
+            <select name='due-month' class='span1'>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            <select name='due-year' class='input-mini'>
+                <option value="2012">2012</option>
+                <option value="2013">2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+            </select>-
+            <select name='due-hour' class='span1'>
+                <option value="0">00</option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+            </select>:
+            <select name='due-hour' class='span1'>
+                <option value="0">00</option>
+                <option value="5">05</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+                <option value="55">55</option>
+            </select>
+            <button type="submit" class="btn btn-success btn-small">Save</button>
+            <button type="submit" class="btn btn-danger btn-small">Cancel</button>
+        </form>
+    </script>
+
+    <script type="text/template" id="tmpl-modal">
+        <div class="fade modal">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3>{title}</h3>
+            </div>
+            <div class="modal-body">
+                <p>{body|s}</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary">Save</a>
+                <a href="#" class="btn cancel">Cancel</a>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="tmpl-plain-modal">
+        <div class="modal-body">
+            <a class="close" data-dismiss="modal">×</a>
+            <p>{body|s}</p>
+        </div>
+    </script>
+
+    <!-- END Templates -->
+
+    <script src="js/libs/jquery-1.7.1.min.js"></script>
+
+    <script src="js/libs/underscore.js"></script>
+    <script src="js/libs/backbone.js"></script>
+    <script src="js/libs/bootstrap.js"></script>
+    <script src="js/libs/dust-full-0.3.0.js"></script>
+    <script src="js/app/backbone.localStorage.js"></script>
+
+    <script src="js/app/mediator.js"></script>
+
+    <script src="js/app/models/projectModel.js"></script>
+    <script src="js/app/models/todoModel.js"></script>
+    <script src="js/app/models/todoListModel.js"></script>
+
+    <script src="js/app/collections/projectsCollection.js"></script>
+    <script src="js/app/collections/todosCollection.js"></script>
+
+    <script src="js/app/views/todoFormView.js"></script>
+    <script src="js/app/views/projectFormView.js"></script>
+    <script src="js/app/views/projectListView.js"></script>
+    <script src="js/app/views/projectView.js"></script>
+    <script src="js/app/views/todoView.js"></script>
+    <script src="js/app/views/appView.js"></script>
+
+    <script src="js/app/routers/appRouter.js"></script>
+    <script src="js/app/routers/projectRouter.js"></script>
+
+    <script src="js/plugins.js"></script>
+    <script src="js/script.js"></script>
+
+    <!--<script>-->
+    <!--var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; // Change UA-XXXXX-X to be your site's ID-->
+    <!--(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;-->
+    <!--g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';-->
+    <!--s.parentNode.insertBefore(g,s)}(document,'script'));-->
+    <!--</script>-->
+
+    <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+    <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+    <![endif]-->
+
+</body>
+</html>
