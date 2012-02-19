@@ -34,11 +34,4 @@ Than point your browser at:
 
 http://localhost:9292
 
-<<<<<<< HEAD
 Nb. You'll need Ruby & Sinatra already installed.
-=======
-Nb. You'll need Ruby & Sinatra alredy installed.
->>>>>>> 83a15d9b83ec29c665339e3c49b772cf6931519c
-
-
-
