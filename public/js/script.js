@@ -5,7 +5,7 @@
 var BTD = BTD || {};
 
 $(document).ready(function(){
-    BTD.projectRouter   = new BTD.projectRouter();
+    //BTD.projectRouter   = new BTD.projectRouter();
     BTD.appRouter       = new BTD.appRouter();
     Backbone.history.start();
 });

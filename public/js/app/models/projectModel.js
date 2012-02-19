@@ -18,6 +18,10 @@ BTD.ProjectModel = Backbone.Model.extend({
         this.todosCollection.on('remove', this.saveProject);
     },
 
+//    parse: function (resp) {
+//        return resp.attributes;
+//    },
+
     /**
      * Checks to see if a project contains any todo items
      */
@@ -65,6 +69,7 @@ BTD.ProjectModel = Backbone.Model.extend({
      * @param {Function} error Error callback function.
      */
     saveProject: function (success, error) {
+        console.log('Project before save', this);
         this.save({
             // Convert todos collection to JSON and set the todos attribute to it's value.
             'title'     : this.get('title'),
@@ -76,6 +81,7 @@ BTD.ProjectModel = Backbone.Model.extend({
             // Success callback function.
             'success'   : _.bind(function (model, resp) {
                 console.log('projectModel.updateProject save success', model, resp);
+                console.log('Project after save', this);
                 if (_.isFunction(success)) {
                     success(model, resp);
                 }

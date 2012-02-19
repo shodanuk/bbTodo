@@ -69,8 +69,8 @@ BTD.appRouter = Backbone.Router.extend({
         if (this.projectsCollection.length > 0) {
             projectModel = this.projectsCollection.first();
         } else {
-            this.navigate('project/create', { 'trigger': true });
-            return;
+            projectModel = new BTD.ProjectModel();
+            this.projectsCollection.add(projectModel);
         }
 
         this.projectView = new BTD.ProjectView({

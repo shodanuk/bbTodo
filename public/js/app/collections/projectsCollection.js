@@ -20,6 +20,7 @@ BTD.ProjectsCollection = Backbone.Collection.extend({
      * @param {Function} error  Error callback function.
      */
     addProject: function (attrs, success, error) {
+        console.log('addProject', attrs);
         this.create(attrs, {
             'wait'      : true,
             'success'   : success  || null,

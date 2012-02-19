@@ -25,13 +25,14 @@ BTD.ProjectFormView = Backbone.View.extend({
 
         this.projectFormTmpl({ title : title }, _.bind(function (err, out) {
             this.$el.html(out);
+
+            // Cache key DOM elements
+            this.$projectTitle  = this.$("#project-title");
+            this.$controlGroup  = this.$projectTitle.closest('.control-group');
+            this.$inlineHelp    = this.$(".help-inline");
+
             BTD.Mediator.publish('ui:ready', this);
         },this));
-
-        // Cache key DOM elements
-        this.$projectTitle  = this.$("#project-title");
-        this.$controlGroup  = this.$projectTitle.closest('.control-group');
-        this.$inlineHelp    = this.$(".help-inline");
 
         return this;
     },
