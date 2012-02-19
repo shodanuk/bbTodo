@@ -2,50 +2,47 @@ var BTD = BTD || {};
 
 BTD.ProjectsCollection = Backbone.Collection.extend({
     model           : BTD.ProjectModel,
-    url             : '/projects',
+    url             : '/project',
     localStorage    : new Store("BTD_Projects"),
     activeProject   : null, // pointer to the currently active project.
 
     initialize: function () {
-        console.log('ProjectsCollection.initialize');
-
         _.bindAll(this, 'addProject');
 
         BTD.Mediator.subscribe('project:create', this.addProject);
     },
 
     /**
-     * Add a new project
+     * Add a new project to the projects collection.
      *
-     * @param projectModel
+     * @param {Object} attrs Hash of attributes for the new project.
+     * @param {Function} success Success callback function.
+     * @param {Function} error  Error callback function.
      */
-    addProject: function (data) {
-        console.log('ProjectsCollection.addProject', data);
-
-        var newProject;
-
-        this.on('add', _.bind(function (projectModel) {
-            if (projectModel) {
-                if (typeof data.success !== 'undefined') {
-                    data.success();
-                }
-            } else {
-                if (typeof data.error !== 'undefined') {
-                    data.error(null, projectModel);
-                }
-            }
-        }, this));
-
-        newProject = this.create(data.attrs, { 'wait' : true }); // Attempt to create the new project
+    addProject: function (attrs, success, error) {
+        this.create(attrs, {
+            'wait'      : true,
+            'success'   : success  || null,
+            'error'     : error    || null
+        });
     },
 
     /**
+     * Set a project to be the currently active project.
      *
-     * @param string id Project Id
+     * @param {String} id The Id of the project to be made the current active project.
      */
     makeActive: function (id) {
         this.activeProject = id;
-
         BTD.Mediator.publish('projectCollection:newActive');
+    },
+
+    /**
+     * Get the model for the current active project.
+     *
+     * @return {Object} The active project model object.
+     */
+    getActiveProject: function () {
+        return this.get(this.activeProject);
     }
 });

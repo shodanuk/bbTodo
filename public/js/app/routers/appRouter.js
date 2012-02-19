@@ -11,37 +11,57 @@ BTD.appRouter = Backbone.Router.extend({
         '*other'                : 'pageNotFound'
     },
 
+    /**
+     * A list of all UI components. If you add a new one, add a refence to it here or the
+     * appReady event will never fire.
+     */
     uiComponents: [
         'appView',
         'projectListView',
-        'projectView'
+        'projectView',
+        'projectFormview',
+        'todoFormview'
     ],
 
+    /**
+     * The number of UI componenets that are rendered and in a 'ready' state. The count is incremented
+     * each time a ui:ready event is recieved from a UI component. When the count matches the number of
+     * items in the uiComponents array, the application is deemed 'ready' and the app:ready event is fired
+     */
     componentsReady: 0,
 
     initialize: function () {
-        console.log('appRouter.initialize');
-
-        _.bindAll(this, 'navigateTo', 'uiComponentReady', 'appError');
+        _.bindAll(this, 'uiComponentReady', 'appError');
 
         BTD.Mediator.subscribe('ui:ready', this.uiComponentReady);
         BTD.Mediator.subscribe('app:error', this.appError);
 
         this.projectsCollection = new BTD.ProjectsCollection();
-        this.projectsCollection.fetch();
+        this.projectsCollection.fetch(); // Fetch the project data from localStorage
 
         this.appView = new BTD.AppView();
 
         this.projectListView = new BTD.ProjectListView({
-            collection  : this.projectsCollection,
-            el          : "#project-list"
+            'collection'    : this.projectsCollection,
+            'el'            : "#project-list"
+        });
+
+        this.projectFormView = new BTD.ProjectFormView({
+            'collection'    : this.projectsCollection,
+            'el'            : '#new-project-form'
+        });
+
+        this.todoFormView = new BTD.TodoFormView({
+            'el'            : "#new-todo-form"
         });
 
         this.projectListView.render();
+        this.projectFormView.render();
+        this.todoFormView.render();
     },
 
     /**
-     * Main home page
+     * Display the main home page.
      */
     home: function () {
         var projectModel;
@@ -54,31 +74,20 @@ BTD.appRouter = Backbone.Router.extend({
         }
 
         this.projectView = new BTD.ProjectView({
-            el      : "#current-project",
-            model   : projectModel
+            el          : "#current-project",
+            model       : projectModel,
+            collection  : this.projectsCollection
         });
+
+        this.todoFormView.options.project = projectModel;
 
         this.projectView.render();
     },
 
     /**
+     * View a specific project.
      *
-     */
-    createProject: function () {
-        this.projectView = new BTD.ProjectView({
-            el      : "#current-project",
-            model   : new BTD.ProjectModel()
-        });
-
-        this.projectView.render();
-
-        BTD.Mediator.subscribe('app:ready', function () {
-            BTD.Mediator.publish('projectForm:show');
-        });
-    },
-
-    /**
-     *
+     * @param {String} id The ID of the project to display.
      */
     showProject: function(id) {
         var projectModel;
@@ -92,21 +101,23 @@ BTD.appRouter = Backbone.Router.extend({
 
         this.projectsCollection.makeActive(id);
 
+        this.todoFormView.options.project = projectModel;
+
         this.projectView = new BTD.ProjectView({
-            el      : "#current-project",
-            model   : projectModel
+            el          : "#current-project",
+            model       : projectModel,
+            collection  : this.projectsCollection
         });
 
         this.projectView.render();
     },
 
     /**
+     * Delete a specific project.
      *
-     * @param id
+     * @param {String} id The ID of the project to be deleted.
      */
     deleteProject: function (id) {
-        console.log('projectRouter.delete', id);
-
         var projectModel; // The project model to be deleted
 
         try {
@@ -118,12 +129,12 @@ BTD.appRouter = Backbone.Router.extend({
         }
 
         projectModel.destroy({
-            success: _.bind(function (model, response) {
+            'success'   : _.bind(function (model, response) {
                 this.projectsCollection.remove(model); // remove the model from the collection
                 BTD.Mediator.publish('project:deleted');
                 this.navigate('', { 'trigger': true });
             }, this),
-            error: _.bind(function (model, response) {
+            'error'     : _.bind(function (model, response) {
                 console.log('Delete failed', model, response);
                 this.navigate('', { 'trigger': true });
             }, this)
@@ -131,12 +142,11 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
+     * Update a specific project.
      *
-     * @param id
+     * @param {String} id The Id of the project to update.
      */
     updateProject: function (id) {
-        console.log('projectRouter.update');
-
         var projectModel
 
         try {
@@ -157,37 +167,26 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
+     * Log a optional error message to the console and redirect to the '404 page'.
      *
-     * @param string path
-     */
-    navigateTo: function (path) {
-        console.log('appRouter.navigateTo', path);
-
-        this.navigate(path, { trigger: true });
-    },
-
-    /**
-     *
-     *
-     * @param string msg
+     * @param {String} msg A message to be logged to teh console.
      */
     appError: function (msg) {
-        console.error(msg);
+        if ( ! _.isUndefined(msg))  {
+            console.error(msg);
+        }
+
         this.navigate('404', { 'trigger' : true });
     },
 
     /**
-     *
-     *
-     * @param obj component
+     * Increment the componentsReady count. If all components are ready, fire
+     * the app:ready event.
      */
-    uiComponentReady: function (component) {
-        console.log('appRouter.uiComponentReady', component);
-
+    uiComponentReady: function () {
         this.componentsReady++;
 
         if (this.componentsReady === this.uiComponents.length) {
-            console.log('app ready');
             BTD.Mediator.publish('app:ready');
         }
     }

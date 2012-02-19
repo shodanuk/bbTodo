@@ -3,6 +3,8 @@ var BTD = BTD || {};
 BTD.ProjectView = Backbone.View.extend({
     tagName: 'section',
     className: 'project',
+
+    // Precompile and cache view templates
     todoTemplate: dust.compileFn($("#tmpl-todo").html(), 'todo'),
     template: dust.compileFn($("#tmpl-project").html(), 'projectView'),
 
@@ -11,80 +13,30 @@ BTD.ProjectView = Backbone.View.extend({
     },
 
     initialize: function () {
-        console.log('ProjectView.initialize', this.model);
+        _.bindAll(this, 'render', 'insertTodo');
 
-        dust.compile($('#tmpl-todo').html(), 'todo');
-
-        _.bindAll(this, 'render', 'showActiveProject', 'insertTodo');
-        //BTD.Mediator.subscribe('add', this.newProject);
-        this.model.bind('change', this.render);
+        this.model.on('todos:new', this.insertTodo);
         this.model.view = this;
-
-        this.todoFormView = new BTD.TodoFormView({
-            model: new BTD.TodoModel()
-        });
+        this.model.todosCollection.on('add remove', this.render);
     },
 
-    /**
-     *
-     *
-     * @param obj model
-     */
-    showActiveProject: function (model) {
-//        console.log('ProjectView.showActiveProject', model);
-//
-//        this.model = model;
-//        this.render();
-    },
-
-    /**
-     *
-     *
-     * @param fn callback
-     */
-    insertAllTodos: function (callback) {
-        console.log('ProjectView.insertTodos', this.model);
-
-        this.model.todos.each(this.insertTodo);
-
-        if (typeof callback !== 'undefined') {
-            callback();
-        }
-    },
-
-    /**
-     *
-     * @param obj todoModel
-     */
-    insertTodo: function (todoModel) {
-        console.log('ProjectView.insertTodo', todoModel);
-
-        var view = new BTD.TodoView({ 'model': todoModel });
-        this.$todoList.append(view.render().el);
-    },
-
-    /**
-     *
-     */
     render: function () {
-        console.log('ProjectView.render', this.model);
-
-        var hasModel = (typeof this.model !== 'undefined'); // Does this view have a model attached?
+        var hasModel = ( ! _.isUndefined(this.model)); // Does this view have a model attached?
 
         var viewData = {
             id:    hasModel ? this.model.get('id')      : 0,
             title: hasModel ? this.model.get('title')   : false,
-            todos: hasModel ? this.model.todos.toJSON() : []
+            todos: hasModel ? this.model.todosCollection.toJSON() : []
         };
 
-        var onTemplateRender = function (err, out) {
+        var onTemplateRender = _.bind(function (err, out) {
             var onReady = _.bind(function () {
-                BTD.Mediator.publish('ui:ready', this);
+                BTD.Mediator.publish('ui:ready', this); // Fire when the view has finished rendering
             }, this);
 
             this.$el.html(out);
-            this.$el.append(this.todoFormView.render().el);
 
+            // If the project has a view attached, render all it's todo views
             if (hasModel) {
                 this.$todoList = this.$('.todo-list');
                 this.insertAllTodos(onReady);
@@ -93,18 +45,41 @@ BTD.ProjectView = Backbone.View.extend({
             }
 
             return this;
-        };
+        }, this);
 
-        this.template(viewData, _.bind(onTemplateRender, this));
+        this.template(viewData, onTemplateRender);
     },
 
     /**
+     * Insert a single todo view into the DOM.
      *
-     * @param obj evt
+     * @param {Object} todoModel
+     */
+    insertTodo: function (todoModel) {
+        var view = new BTD.TodoView({ 'model': todoModel });
+        this.$todoList.append(view.render().el);
+    },
+
+    /**
+     * Insert all todo views into the DOM
+     *
+     * @param {Function} callback Callback function to execute after inserting all todo items
+     */
+    insertAllTodos: function (callback) {
+        this.model.todosCollection.each(this.insertTodo);
+        if (_.isFunction(callback)) {
+            callback();
+        }
+    },
+
+    /**
+     * Click event handler for the update button.
+     *
+     * @param {Object} evt DOM event
      */
     clickUpdate: function (evt) {
-        console.log('projectView.clickUpdate');
-
         evt.preventDefault();
+
+        // TODO make this work!
     }
 });

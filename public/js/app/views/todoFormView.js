@@ -8,36 +8,74 @@ BTD.TodoFormView = Backbone.View.extend({
     },
 
     initialize: function () {
-        console.log('todoFormView.render');
-
         _.bindAll(this, 'render', 'onSubmit');
     },
 
     render: function () {
-        console.log('todoFormView.render');
-
         this.template({
-            body    : '',
-            project : ''
+            body : '',
+            date : ''
         }, _.bind(function (err, out) {
 
             this.$el.html(out);
-            this.$todo_body     = this.$('#todo_body'); // Cache a reference to the main input field
-            this.$project_id    = this.$('#project_id'); // Cache a reference to the main input field
+
+            // Cache references to DOM elements.
+            this.$bodyInput     = this.$("#todo-body");
+            this.$inlineHelp    = this.$(".help-block");
+            this.$inputWrapper  = this.$bodyInput.closest('.control-group');
+
+            BTD.Mediator.publish('ui:ready', this);
 
         }, this));
 
         return this;
     },
 
+    /**
+     * Submit event handler for the todo form.
+     *
+     * @param {Object} evt DOM event
+     */
     onSubmit: function (evt) {
-        console.log('todoFormView.onSubmit');
-
         evt.preventDefault();
 
-        BTD.Mediator.publish('todo:new', {
-            'body'      : this.$todo_body.val(),
-            'project'   : this.$project_id.val()
-        });
+        this.options.project.addTodo(
+            // New todo model attributes
+            {
+                'body': this.$bodyInput.val()
+            },
+
+            // Success callback function
+            _.bind(function () {
+                this.$bodyInput.val(''); // Clear the body form field
+            }, this),
+
+            // Error callback function
+            _.bind(function () {
+                this.onError(null, 'Set a proper error message here');
+            }, this)
+        );
+    },
+
+    /**
+     * Reset the form to it's original state. Remove any feedback, messages,
+     * styling etc.
+     */
+    resetForm: function() {
+        this.$inputWrapper.removeClass('error');
+        this.$bodyInput.removeClass('error');
+        this.$inlineHelp.text("");
+    },
+
+    /**
+     * Display error message and add error styling.
+     *
+     * @param {Object} model
+     * @param {String} error Error message text
+     */
+    onError: function(model, error) {
+        this.$inputWrapper.addClass('error');
+        this.$bodyInput.addClass('error');
+        this.$inlineHelp.text(error);
     }
 });

@@ -44,6 +44,7 @@ _.extend(Store.prototype, {
 
   // Update a model by replacing its copy in `this.data`.
   update: function(model) {
+      console.log(JSON.stringify(model));
     localStorage.setItem(this.name+"-"+model.id, JSON.stringify(model));
     if (!_.include(this.records, model.id.toString())) this.records.push(model.id.toString()); this.save();
     return model;

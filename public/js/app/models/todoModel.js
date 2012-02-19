@@ -11,22 +11,22 @@ BTD.TodoModel = Backbone.Model.extend({
         date        : null
     },
 
+    localStorage: new Store("BTD_Projects"),
+
     initialize: function () {
-        console.log('TodoModel.initialize');
-
-
     },
 
+    /**
+     * Toggle the 'complete' state of the todo.
+     */
     toggle: function () {
-        console.log('TodoModel.toggle');
-
         this.set({ "complete": ( ! this.get('complete')) });
     },
 
     /**
+     * Validate the todo model. Todos must have a non-blank body attribute.
      *
-     *
-     * @param obj attrs
+     * @param {Object} attrs
      */
     validate: function (attrs) {
         if ( ! attrs.body || attrs.body == '') return 'Todo items must cannot be blank';
@@ -35,15 +35,15 @@ BTD.TodoModel = Backbone.Model.extend({
     /**
      * Remove the todo from db and remove it's view element from the DOM
      */
-    clear: function () {
-        this.destroy({
-            success: function (model, response) {
-                console.log('success', model, response);
+    clearTodo: function () {
+        if ( ! _.isUndefined(this.collection)) {
+            this.collection.on('remove', function () {
                 this.view.remove();
-            },
-            error: function (model, response) {
-                console.log('error', model, response);
-            }
-        });
+            }, this);
+
+            this.collection.remove(this);
+        } else {
+            this.view.remove();
+        }
     }
 });
