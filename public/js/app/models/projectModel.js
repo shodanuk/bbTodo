@@ -14,13 +14,14 @@ BTD.ProjectModel = Backbone.Model.extend({
         _.bindAll(this, 'addTodo', 'saveProject');
 
         this.todosCollection = new BTD.TodosCollection();
-        this.todosCollection.reset(this.get('todos'));
         this.todosCollection.on('remove', this.saveProject);
     },
 
-//    parse: function (resp) {
+    parse: function (resp) {
+//        console.log(resp, this);
+//        this.todosCollection.reset(resp.todos);
 //        return resp.attributes;
-//    },
+    },
 
     /**
      * Checks to see if a project contains any todo items
