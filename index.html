@@ -24,8 +24,9 @@
                 <div id="new-project-form">Please wait, loading...</div>
             </aside>
             <section class="span8 ">
+
                 <div id="current-project">Please wait, loading...</div>
-                <div id="new-todo-form">Please wait, loading...</div>
+                <div id="new-todo-form" class="well clearfix">Please wait, loading...</div>
             </section>
         </div>
     </div>
@@ -50,16 +51,18 @@
     </script>
 
     <script type="text/template" id="tmpl-todo">
-        <i class="{?complete}icon-star{:else}icon-star-empty{/complete} status"></i>
-        <span class="body">{body}</span>
-        <time>({date})</time>
-        <a href="#project/delete/{id}" class="delete"><i class="icon-trash"></i></a>
+        <article>
+            <i class="{?complete}icon-star{:else}icon-star-empty{/complete} status"></i>
+            <span class="body">{body}</span>
+            <time>({date})</time>
+            <a href="#project/delete/{id}" class="delete"><i class="icon-trash"></i></a>
+        </article>
     </script>
 
     <script type="text/template" id="tmpl-project-list">
         <header>
             <a href="#project/create" id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
-            <h1>Your projects</h1>
+            <h1>Projects</h1>
         </header>
 
         {?projects}
@@ -77,7 +80,7 @@
     </script>
 
     <script type="text/template" id="tmpl-project-form">
-        <form method="get" accept-charset="utf-8" class="well form-inline">
+        <form method="get" accept-charset="utf-8" class="well form-inline" style="display:none">
             <fieldset id="add-new-project">
                 <legend>Add new project</legend>
                 <div class="control-group">

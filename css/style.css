@@ -1,6 +1,12 @@
-html, body, #wrapper, .row-fluid {
+html,
+body,
+#wrapper, .row-fluid {
     height: 100%;
+}
 
+body {
+    background: url(../img/bg.png);
+    font-size: 16px;
 }
 
 h1 {
@@ -8,7 +14,7 @@ h1 {
 }
 
 .sidebar {
-    background-color: #999;
+    background: #999 url(../img/bg-black2.png);
     color: #fefefe;
     height: 100%;
 }
@@ -22,25 +28,37 @@ h1 {
     float: right;
 }
 
-#project-list {
+#project-list header {
     padding: 20px;
 }
 
+#project-list header h1 {
+    text-shadow: 1px 1px 1px #000;
+}
+
 #project-list ul {
+    border-bottom: 1px solid #222;
+    border-top: 1px solid #333;
     margin: 0;
 }
 
 #project-list li {
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #222;
     display: block;
     height: 28px;
     list-style: none;
     line-height: 28px;
     overflow: hidden;
-    padding: 3px 0;
+    padding: 5px 20px;
+    position: relative;
 }
 
 #project-list li a {
+    display: block;
     color: #fefefe;
+    text-shadow: 1px 1px 1px #000;
 }
 
 #project-list li a:hover {
@@ -49,11 +67,22 @@ h1 {
 
 #project-list .delete {
     cursor: pointer;
-    float: right;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+}
+
+#new-project-form {
+    margin: 0 20px;
 }
 
 #current-project {
-    padding: 20px 20px 20px 0;
+    margin-right: 20px;
+    padding: 20px 0;
+}
+
+#current-project header h1 {
+    text-shadow: 1px 1px 1px #aaa;
 }
 
 #current-project .update {
@@ -61,25 +90,35 @@ h1 {
 }
 
 .todo-list {
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #fff;
     list-style: none;
     margin: 0;
     padding: 0;
 }
-.todo-list li {
-    display: block;
-    padding: 3px 0;
+
+.todo {
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #ccc;
+    padding: 8px 0;
+    position: relative;
+    text-shadow: 1px 1px 1px #aaa;
 }
 
-.todo-list time {
+.todo time {
     display: none;
 }
 
-.todo-list .delete {
+.todo .delete {
     cursor: pointer;
-    float: right;
+    margin-top: -7px;
+    position: absolute;
+    right: 0;
+    top: 50%;
 }
 
-.todo-list .status {
+.todo .status {
     cursor: pointer;
     margin-right: 10px;
 }
@@ -91,4 +130,34 @@ h1 {
 .todo.complete {
     color: #999;
     text-decoration: line-through;
+}
+
+#new-todo-form {
+    margin-right: 20px;
+}
+
+#new-todo-form form {
+    margin: 0;
+}
+
+#new-todo-form .control-group {
+    margin: 0;
+}
+
+#new-todo-form .help-block {
+    margin: 0;
+}
+
+#todo-body {
+    float: left;
+    font-size: 18px;
+    padding: 1%;
+    width: 90%;
+
+}
+
+#new-todo-form button[type=submit] {
+    float: right;
+    padding: 1%;
+    width: 6%;
 }

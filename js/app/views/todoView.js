@@ -2,7 +2,7 @@ var BTD = BTD || {};
 
 BTD.TodoView = Backbone.View.extend({
     template    : dust.compileFn($("#tmpl-todo").html()),
-    tagName     : 'article',
+    tagName     : 'li',
     className   : 'todo',
     events      : {
         'click .status' : 'statusClick',
@@ -34,7 +34,6 @@ BTD.TodoView = Backbone.View.extend({
         evt.preventDefault();
 
         this.model.toggle();
-
         this.$el.toggleClass('complete');
     },
 
