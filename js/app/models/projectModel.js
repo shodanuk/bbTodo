@@ -15,6 +15,10 @@ BTD.ProjectModel = Backbone.Model.extend({
         this.todosCollection = new BTD.TodosCollection(this.get('todos'));
         this.todosCollection.on('remove', this.saveProject);
         this.todosCollection.on('change:complete', this.saveProject);
+        this.on('sync', function(){
+            console.log('sync')
+
+        });
     },
 
     /**
@@ -75,6 +79,7 @@ BTD.ProjectModel = Backbone.Model.extend({
                 if (_.isFunction(success)) {
                     success(model, resp);
                 }
+                BTD.Mediator.publish('project:updated');
             }, this),
 
             // Error callback function.

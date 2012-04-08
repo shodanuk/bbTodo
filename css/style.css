@@ -18,11 +18,16 @@ h1 {
     background: #999 url(../img/bg-black2.png);
     color: #fefefe;
     height: 100%;
-
+    overflow-y: scroll;
 
     -webkit-box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
     -moz-box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
     box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
+}
+
+div[role=main] {
+    height: 100%;
+    overflow-y: scroll;
 }
 
 #wrapper {
@@ -59,13 +64,16 @@ h1 {
     padding: 8px 20px;
     position: relative;
 
-
     -webkit-transition: background 0.3s ease-in-out;
        -moz-transition: background 0.3s ease-in-out;
         -ms-transition: background 0.3s ease-in-out;
          -o-transition: background 0.3s ease-in-out;
             transition: background 0.3s ease-in-out;
+}
 
+#project-list li .badge {
+    float: left;
+    margin-right: 10px;
 }
 
 #project-list li:hover {
@@ -147,6 +155,12 @@ h1 {
     padding: 8px 0;
     position: relative;
     text-shadow: 1px 1px 1px #aaa;
+
+    -webkit-transition: background 0.3s ease-in-out;
+       -moz-transition: background 0.3s ease-in-out;
+        -ms-transition: background 0.3s ease-in-out;
+         -o-transition: background 0.3s ease-in-out;
+            transition: background 0.3s ease-in-out;
 }
 
 .todo:hover {
@@ -188,14 +202,8 @@ h1 {
     margin-right: 20px;
 }
 
-#new-todo-form form {
-    margin: 0;
-}
-
-#new-todo-form .control-group {
-    margin: 0;
-}
-
+#new-todo-form form,
+#new-todo-form .control-group,
 #new-todo-form .help-block {
     margin: 0;
 }
@@ -205,7 +213,6 @@ h1 {
     font-size: 18px;
     padding: 1%;
     width: 82%;
-
 }
 
 #new-todo-form button[type=submit] {
@@ -214,10 +221,20 @@ h1 {
     width: 14%;
 }
 
-
 @media (max-width: 768px) {
     .sidebar {
         height: auto;
+        overflow-y: auto;
         padding-bottom: 1px;
+    }
+
+    div[role=main] {
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    #new-todo-form,
+    #current-project {
+        margin-right: 0;
     }
 }

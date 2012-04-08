@@ -9,6 +9,7 @@ BTD.ProjectListView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'render');
         this.collection.on('add remove', this.render);
+        BTD.Mediator.subscribe('project:updated', this.render);
     },
 
     showNewProjectForm: function() {
@@ -16,6 +17,7 @@ BTD.ProjectListView = Backbone.View.extend({
     },
 
     render: function() {
+        console.log('render');
         this.template({
             'projects' : this.collection.toJSON()
         }, _.bind(function (err, out) {

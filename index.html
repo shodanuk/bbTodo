@@ -69,7 +69,8 @@
         {?projects}
             <ul>
                 {#projects}
-                <li>
+                <li class="clearfix">
+                    <span class="badge">{.todos.length}</span>
                     <a href="#project/show/{id}" class="project-link">{.title}</a>
                     <a href="#project/delete/{id}" class="delete"><i class="icon-trash icon-white"></i></a>
                 </li>
