@@ -7,20 +7,14 @@ BTD.ProjectModel = Backbone.Model.extend({
     },
 
     todosCollection: [],
-
     localStorage: new Store("BTD_Projects"),
 
     initialize: function () {
+        //console.log('initialize');
         _.bindAll(this, 'addTodo', 'saveProject');
 
-        this.todosCollection = new BTD.TodosCollection();
+        this.todosCollection = new BTD.TodosCollection(this.get('todos'));
         this.todosCollection.on('remove', this.saveProject);
-    },
-
-    parse: function (resp) {
-//        console.log(resp, this);
-//        this.todosCollection.reset(resp.todos);
-//        return resp.attributes;
     },
 
     /**
@@ -50,8 +44,6 @@ BTD.ProjectModel = Backbone.Model.extend({
         var todo = new BTD.TodoModel();
 
         todo.on('change', function () {
-            console.log('todo: ',todo);
-
             this.todosCollection.add(todo);
             this.saveProject(success,  error);
         }, this);
@@ -77,7 +69,7 @@ BTD.ProjectModel = Backbone.Model.extend({
             'todos'     : this.todosCollection.toJSON()
         }, {
             // Wait for the server to finish saving before firing the change event.
-            'wait'      : true,
+            //'wait'      : true,
 
             // Success callback function.
             'success'   : _.bind(function (model, resp) {
