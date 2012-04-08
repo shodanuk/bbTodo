@@ -1,1 +1,0 @@
-var BTD = BTD || {};
