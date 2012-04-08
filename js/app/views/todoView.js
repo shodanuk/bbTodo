@@ -13,6 +13,9 @@ BTD.TodoView = Backbone.View.extend({
         _.bindAll(this, 'render', 'statusClick', 'deleteClick');
         this.model.on('change', this.render);
         this.model.view = this;
+        if (this.model.get('complete')) {
+            this.$el.addClass('complete');
+        }
     },
 
     render: function () {
@@ -31,6 +34,8 @@ BTD.TodoView = Backbone.View.extend({
         evt.preventDefault();
 
         this.model.toggle();
+
+        this.$el.toggleClass('complete');
     },
 
     /**

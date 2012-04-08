@@ -1,6 +1,6 @@
 html, body, #wrapper, .row-fluid {
     height: 100%;
-    overflow: hidden;
+
 }
 
 h1 {
@@ -86,4 +86,9 @@ h1 {
 
 .hide-me {
     display: none;
+}
+
+.todo.complete {
+    color: #999;
+    text-decoration: line-through;
 }

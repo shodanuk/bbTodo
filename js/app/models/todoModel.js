@@ -13,9 +13,6 @@ BTD.TodoModel = Backbone.Model.extend({
 
     localStorage: new Store("BTD_Projects"),
 
-    initialize: function () {
-    },
-
     /**
      * Toggle the 'complete' state of the todo.
      */
