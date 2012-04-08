@@ -12,20 +12,20 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
-     * A list of all UI components. If you add a new one, add a reference to it here or the
+     * A list of all UI components. If you add a new one, add a refence to it here or the
      * appReady event will never fire.
      */
     uiComponents: [
         'appView',
         'projectListView',
         'projectView',
-        'projectFormView',
-        'todoFormView'
+        'projectFormview',
+        'todoFormview'
     ],
 
     /**
-     * The number of UI components that are rendered and in a 'ready' state. The count is incremented
-     * each time a ui:ready event is received from a UI component. When the count matches the number of
+     * The number of UI componenets that are rendered and in a 'ready' state. The count is incremented
+     * each time a ui:ready event is recieved from a UI component. When the count matches the number of
      * items in the uiComponents array, the application is deemed 'ready' and the app:ready event is fired
      */
     componentsReady: 0,
@@ -66,7 +66,7 @@ BTD.appRouter = Backbone.Router.extend({
     home: function () {
         var projectModel;
 
-        if (this.projectsCollection.length) {
+        if (this.projectsCollection.length > 0) {
             projectModel = this.projectsCollection.first();
         } else {
             projectModel = new BTD.ProjectModel();
@@ -85,7 +85,7 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
-     * View a project.
+     * View a specific project.
      *
      * @param {String} id The ID of the project to display.
      */
@@ -113,7 +113,7 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
-     * Delete a project.
+     * Delete a specific project.
      *
      * @param {String} id The ID of the project to be deleted.
      */
@@ -142,7 +142,7 @@ BTD.appRouter = Backbone.Router.extend({
     },
 
     /**
-     * Update a project.
+     * Update a specific project.
      *
      * @param {String} id The Id of the project to update.
      */
