@@ -6,10 +6,11 @@ body,
 
 body {
     background: url(../img/bg.png);
-    font-size: 16px;
+    font-size: 18px;
 }
 
 h1 {
+    font-family: 'Oleo Script', cursive;
     margin-bottom: 20px;
 }
 
@@ -17,6 +18,11 @@ h1 {
     background: #999 url(../img/bg-black2.png);
     color: #fefefe;
     height: 100%;
+
+
+    -webkit-box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
+    box-shadow:  3px 0px 20px 5px rgba(0, 0, 0, 0.5);
 }
 
 #wrapper {
@@ -52,6 +58,18 @@ h1 {
     overflow: hidden;
     padding: 8px 20px;
     position: relative;
+
+
+    -webkit-transition: background 0.3s ease-in-out;
+       -moz-transition: background 0.3s ease-in-out;
+        -ms-transition: background 0.3s ease-in-out;
+         -o-transition: background 0.3s ease-in-out;
+            transition: background 0.3s ease-in-out;
+
+}
+
+#project-list li:hover {
+    background: rgba(255,255,255,0.1);
 }
 
 #project-list li a {
@@ -73,7 +91,33 @@ h1 {
 }
 
 #new-project-form {
-    margin: 0 20px;
+    margin: 20px 20px;
+    position: relative;
+}
+
+#new-project-form form {
+    margin: 0;
+}
+
+#new-project-form .control-group {
+    margin: 0;
+}
+
+#new-project-form button[type=submit] {
+    float: right;
+    width: 17%;
+}
+
+#new-project-form  .close {
+    position: absolute;
+    top: -2px;
+    right: 4px;
+    line-height: 1;
+}
+
+#project-title {
+    font-size: 18px;
+    width: 77%;
 }
 
 #current-project {
@@ -98,12 +142,15 @@ h1 {
 }
 
 .todo {
-    background: rgba(255,255,255,0.03);
     border-bottom: 1px solid #fff;
     border-top: 1px solid #ccc;
     padding: 8px 0;
     position: relative;
     text-shadow: 1px 1px 1px #aaa;
+}
+
+.todo:hover {
+    background: rgba(255, 251, 208,0.3);
 }
 
 .todo time {
@@ -112,10 +159,15 @@ h1 {
 
 .todo .delete {
     cursor: pointer;
+    display: none;
     margin-top: -7px;
     position: absolute;
-    right: 0;
+    right: 5px;
     top: 50%;
+}
+
+.todo:hover .delete {
+    display: block;
 }
 
 .todo .status {
@@ -152,19 +204,20 @@ h1 {
     float: left;
     font-size: 18px;
     padding: 1%;
-    width: 90%;
+    width: 82%;
 
 }
 
 #new-todo-form button[type=submit] {
     float: right;
     padding: 1%;
-    width: 6%;
+    width: 14%;
 }
 
 
 @media (max-width: 768px) {
     .sidebar {
         height: auto;
+        padding-bottom: 1px;
     }
 }

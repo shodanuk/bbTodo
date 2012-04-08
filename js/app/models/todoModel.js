@@ -1,7 +1,6 @@
 /**
  * Main namespace
  */
-
 var BTD = BTD || {};
 
 BTD.TodoModel = Backbone.Model.extend({

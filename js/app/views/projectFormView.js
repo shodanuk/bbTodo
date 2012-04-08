@@ -4,11 +4,13 @@ BTD.ProjectFormView = Backbone.View.extend({
     projectFormTmpl: dust.compileFn($('#tmpl-project-form').html(), 'projectForm'),
 
     events: {
-        'submit form'   : 'saveProject'
+        'submit form'   : 'saveProject',
+        'click .close'  : 'hide'
     },
 
     initialize: function() {
-        _.bindAll(this, 'saveProject', 'render');
+        _.bindAll(this, 'saveProject', 'render', 'show', 'hide');
+        BTD.Mediator.subscribe('projectForm:show', this.show);
     },
 
     /**
@@ -80,5 +82,14 @@ BTD.ProjectFormView = Backbone.View.extend({
         this.$controlGroup.addClass('error');
         this.$projectTitle.addClass('error');
         this.$inlineHelp.text(error);
+    },
+
+    show: function() {
+        console.log('show');
+        this.$el.fadeIn('fast');
+    },
+
+    hide: function() {
+        this.$el.fadeOut('fast');
     }
 });

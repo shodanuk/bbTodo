@@ -13,21 +13,22 @@
     <link rel="stylesheet" href="css/bootstrap-responsive.css">
     <link rel="stylesheet" href="css/style.css">
 
+    <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+
     <script src="js/libs/modernizr-2.0.6.min.js"></script>
 </head>
 <body>
 
     <div id="wrapper" class="container-fluid">
         <div class="row-fluid">
-            <aside class="span4 sidebar">
+            <aside class="span4 sidebar" role="complementary">
                 <div id="project-list">Please wait, loading...</div>
-                <div id="new-project-form">Please wait, loading...</div>
+                <div id="new-project-form" class="well clearfix" style="display:none;">Please wait, loading...</div>
             </aside>
-            <section class="span8 ">
-
+            <div class="span8" role="main">
                 <div id="current-project">Please wait, loading...</div>
                 <div id="new-todo-form" class="well clearfix">Please wait, loading...</div>
-            </section>
+            </div>
         </div>
     </div>
 
@@ -61,7 +62,7 @@
 
     <script type="text/template" id="tmpl-project-list">
         <header>
-            <a href="#project/create" id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
+            <a id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
             <h1>Projects</h1>
         </header>
 
@@ -80,24 +81,23 @@
     </script>
 
     <script type="text/template" id="tmpl-project-form">
-        <form method="get" accept-charset="utf-8" class="well form-inline" style="display:none">
+        <form method="get" accept-charset="utf-8" class="form-inline">
             <fieldset id="add-new-project">
-                <legend>Add new project</legend>
                 <div class="control-group">
-                    <label for="project-title">Title</label>&nbsp;
-                    <input type="text" name="project-title" value="{title}" id="project-title">&nbsp;
+                    <input type="text" name="project-title" value="{title}" placeholder="Project title..." id="project-title">
                     <button type="submit" class="btn btn-success btn-small">Save</button>
                     <span class="help-inline"></span>
                 </div>
             </fieldset>
         </form>
+        <a class="close">x</a>
     </script>
 
     <script type="text/template" id="tmpl-todo-form">
         <form method="get" accept-charset="utf-8" class="form-inline">
             <div class="control-group">
                 <input type="hidden" name="project-id" value="{project}" id="project-id">
-                <input type="text" name="todo-body" value="{body}" id="todo-body" placeholder="Enter a new todo item here" class="input-xlarge">&nbsp;
+                <input type="text" name="todo-body" value="{body}" id="todo-body" placeholder="Enter a new todo item here" class="input-xlarge">
                 <!--<label class="checkbox inline"><input type="checkbox" value="1">Due date?</label>-->
                 <!--<select name='due-day' class='span1'>-->
                     <!--<option value="1">01</option>-->
@@ -235,7 +235,7 @@
 
     <script src="js/app/models/projectModel.js"></script>
     <script src="js/app/models/todoModel.js"></script>
-    <script src="js/app/models/todoListModel.js"></script>
+    <!--<script src="js/app/models/todoListModel.js"></script>-->
 
     <script src="js/app/collections/projectsCollection.js"></script>
     <script src="js/app/collections/todosCollection.js"></script>

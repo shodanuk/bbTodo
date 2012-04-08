@@ -89,7 +89,7 @@ BTD.appRouter = Backbone.Router.extend({
      *
      * @param {String} id The ID of the project to display.
      */
-    showProject: function(id) {
+    showProject: function (id) {
         var projectModel;
 
         try {
@@ -110,6 +110,14 @@ BTD.appRouter = Backbone.Router.extend({
         });
 
         this.projectView.render();
+    },
+
+    /**
+     * Display the add new project form
+     */
+    createProject: function () {
+        this.home();
+        this.projectFormView.show();
     },
 
     /**
