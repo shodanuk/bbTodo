@@ -171,16 +171,25 @@ div[role=main] {
     display: none;
 }
 
-.todo .delete {
+.todo .delete,
+.todo .edit {
     cursor: pointer;
     display: none;
     margin-top: -7px;
     position: absolute;
-    right: 5px;
     top: 50%;
 }
 
-.todo:hover .delete {
+.todo .delete {
+    right: 5px;
+}
+
+.todo .edit {
+    right: 25px;
+}
+
+.todo:hover .delete,
+.todo:hover .edit {
     display: block;
 }
 
