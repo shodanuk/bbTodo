@@ -1,271 +1,273 @@
 <!doctype html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>BB Todos</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <title>BB Todos</title>
+        <meta name="description" content="">
+        <meta name="author" content="Terry Morgan <terry@centralmediauk.com>">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/bootstrap-responsive.css">
-    <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-responsive.css">
+        <link rel="stylesheet" href="css/style.css">
 
-    <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
 
-    <script src="js/libs/modernizr-2.0.6.min.js"></script>
-</head>
-<body>
+        <script src="js/libs/modernizr-2.0.6.min.js"></script>
+    </head>
+    <body>
 
-    <div id="wrapper" class="container-fluid">
-        <div class="row-fluid">
-            <aside class="span4 sidebar" role="complementary">
-                <div id="project-list">Please wait, loading...</div>
-                <div id="new-project-form" class="well clearfix" style="display:none;">Please wait, loading...</div>
-            </aside>
-            <div class="span8" role="main">
-                <div id="current-project">Please wait, loading...</div>
-                <div id="new-todo-form" class="well clearfix">Please wait, loading...</div>
+        <div id="wrapper" class="container-fluid">
+            <div class="row-fluid">
+                <aside class="span4 sidebar" role="complementary">
+                    <div id="project-list">Please wait, loading...</div>
+                    <div id="new-project-form" class="well clearfix" style="display:none;">Please wait, loading...</div>
+                </aside>
+                <div class="span8" role="main">
+                    <div id="current-project">Please wait, loading...</div>
+                    <div id="new-todo-form" class="well clearfix">Please wait, loading...</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- START Templates -->
+        <!-- START Templates -->
 
-    <script type="text/template" id="tmpl-project">
-        {?title}
-            <header>
-                <a href="#project/update/{id}" class="btn btn-small update"><i class="icon-edit"></i></a>
-                <h1>{title}</h1>
-            </header>
-            {?todos}
-                <ul class='todo-list'></ul>
+        <script type="text/template" id="tmpl-project">
+            {?title}
+                <header>
+                    <a href="#project/update/{id}" class="btn btn-small update"><i class="icon-edit"></i></a>
+                    <h1>{title}</h1>
+                </header>
+                {?todos}
+                    <ul class='todo-list'></ul>
+                {:else}
+                    <div class="alert">You currently have no todo items in this project. Is that a bad or good thing!?</div>
+                {/todos}
             {:else}
-                <div class="alert">You currently have no todo items in this project. Is that a bad or good thing!?</div>
-            {/todos}
-        {:else}
-            <div class="alert">Please load a project from the list on the left.</div>
-        {/title}
+                <div class="alert">Please load a project from the list on the left.</div>
+            {/title}
 
-    </script>
+        </script>
 
-    <script type="text/template" id="tmpl-todo">
-        <article>
-            <i class="{?complete}icon-star{:else}icon-star-empty{/complete} status"></i>
-            <span class="body">{body}</span>
-            <time>({date})</time>
-            <a href="#project/edit/{id}" class="edit"><i class="icon-edit"></i></a>
-            <a href="#project/delete/{id}" class="delete"><i class="icon-trash"></i></a>
-        </article>
-    </script>
+        <script type="text/template" id="tmpl-todo">
+            <article>
+                <input type="checkbox" class="status" value="1" {?complete}checked="checked"{/complete} />
+                <span class="body">{body}</span>
+                <time>({date})</time>
+                <a href="#project/edit/{id}" class="btn btn-mini edit"><i class="icon-edit"></i></a>
+                <a href="#project/delete/{id}" class="btn btn-mini btn-danger delete"><i class="icon-white icon-trash"></i></a>
+            </article>
+        </script>
 
-    <script type="text/template" id="tmpl-project-list">
-        <header>
-            <a id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
-            <h1>Projects</h1>
-        </header>
+        <script type="text/template" id="tmpl-project-list">
+            <header>
+                <a id="new-project" class="btn btn-small"><i class="icon-plus"></i></a>
+                <h1>Projects</h1>
+            </header>
 
-        {?projects}
-            <ul>
-                {#projects}
-                <li class="clearfix">
-                    <span class="badge">{.todos.length}</span>
-                    <a href="#project/show/{id}" class="project-link">{.title}</a>
-                    <a href="#project/delete/{id}" class="delete"><i class="icon-trash icon-white"></i></a>
-                </li>
-                {/projects}
-            </ul>
-        {:else}
-            <div class="alert">You don't currently have any projects</div>
-        {/projects}
-    </script>
+            {?projects}
+                <ul>
+                    {#projects}
+                        {.project}
+                    {/projects}
+                </ul>
+            {:else}
+                <div class="alert">You don't currently have any projects</div>
+            {/projects}
+        </script>
 
-    <script type="text/template" id="tmpl-project-form">
-        <form method="get" accept-charset="utf-8" class="form-inline">
-            <fieldset id="add-new-project">
+        <script type="text/template" id="tmpl-project-list-project">
+            <span class="badge">{.incompleteCount}</span>
+            <a href="#project/show/{id}" class="project-link">{.title}</a>
+            <a href="#project/delete/{id}" class="delete"><i class="icon-trash icon-white"></i></a>
+        </script>
+
+        <script type="text/template" id="tmpl-project-form">
+            <form method="get" accept-charset="utf-8" class="form-inline">
+                <fieldset id="add-new-project">
+                    <div class="control-group">
+                        <input type="text" name="project-title" value="{title}" placeholder="Project title..." id="project-title">
+                        <button type="submit" class="btn btn-success btn-small">Save</button>
+                        <span class="help-inline"></span>
+                    </div>
+                </fieldset>
+            </form>
+            <a class="close">x</a>
+        </script>
+
+        <script type="text/template" id="tmpl-todo-form">
+            <form method="get" accept-charset="utf-8" class="form-inline">
                 <div class="control-group">
-                    <input type="text" name="project-title" value="{title}" placeholder="Project title..." id="project-title">
+                    <input type="hidden" name="project-id" value="{project}" id="project-id">
+                    <input type="text" name="todo-body" value="{body}" id="todo-body" placeholder="Enter a new todo item here" class="input-xlarge">
+                    <!--<label class="checkbox inline"><input type="checkbox" value="1">Due date?</label>-->
+                    <!--<select name='due-day' class='span1'>-->
+                        <!--<option value="1">01</option>-->
+                        <!--<option value="2">02</option>-->
+                        <!--<option value="3">03</option>-->
+                        <!--<option value="4">04</option>-->
+                        <!--<option value="5">05</option>-->
+                        <!--<option value="6">06</option>-->
+                        <!--<option value="7">07</option>-->
+                        <!--<option value="8">08</option>-->
+                        <!--<option value="9">09</option>-->
+                        <!--<option value="10">10</option>-->
+                        <!--<option value="11">11</option>-->
+                        <!--<option value="12">12</option>-->
+                        <!--<option value="13">13</option>-->
+                        <!--<option value="14">14</option>-->
+                        <!--<option value="15">15</option>-->
+                        <!--<option value="16">16</option>-->
+                        <!--<option value="17">17</option>-->
+                        <!--<option value="18">18</option>-->
+                        <!--<option value="19">19</option>-->
+                        <!--<option value="20">20</option>-->
+                        <!--<option value="21">21</option>-->
+                        <!--<option value="22">22</option>-->
+                        <!--<option value="23">23</option>-->
+                        <!--<option value="24">24</option>-->
+                        <!--<option value="25">25</option>-->
+                        <!--<option value="26">26</option>-->
+                        <!--<option value="27">27</option>-->
+                        <!--<option value="28">28</option>-->
+                        <!--<option value="29">29</option>-->
+                        <!--<option value="30">30</option>-->
+                        <!--<option value="31">31</option>-->
+                    <!--</select>/-->
+                    <!--<select name='due-month' class='span1'>-->
+                        <!--<option value="1">01</option>-->
+                        <!--<option value="2">02</option>-->
+                        <!--<option value="3">03</option>-->
+                        <!--<option value="4">04</option>-->
+                        <!--<option value="5">05</option>-->
+                        <!--<option value="6">06</option>-->
+                        <!--<option value="7">07</option>-->
+                        <!--<option value="8">08</option>-->
+                        <!--<option value="9">09</option>-->
+                        <!--<option value="10">10</option>-->
+                        <!--<option value="11">11</option>-->
+                        <!--<option value="12">12</option>-->
+                    <!--</select>/-->
+                    <!--<select name='due-year' class='input-mini'>-->
+                        <!--<option value="2012">2012</option>-->
+                        <!--<option value="2013">2013</option>-->
+                        <!--<option value="2014">2014</option>-->
+                        <!--<option value="2015">2015</option>-->
+                    <!--</select>--->
+                    <!--<select name='due-hour' class='span1'>-->
+                        <!--<option value="0">00</option>-->
+                        <!--<option value="1">01</option>-->
+                        <!--<option value="2">02</option>-->
+                        <!--<option value="3">03</option>-->
+                        <!--<option value="4">04</option>-->
+                        <!--<option value="5">05</option>-->
+                        <!--<option value="6">06</option>-->
+                        <!--<option value="7">07</option>-->
+                        <!--<option value="8">08</option>-->
+                        <!--<option value="9">09</option>-->
+                        <!--<option value="10">10</option>-->
+                        <!--<option value="11">11</option>-->
+                        <!--<option value="12">12</option>-->
+                        <!--<option value="13">13</option>-->
+                        <!--<option value="14">14</option>-->
+                        <!--<option value="15">15</option>-->
+                        <!--<option value="16">16</option>-->
+                        <!--<option value="17">17</option>-->
+                        <!--<option value="18">18</option>-->
+                        <!--<option value="19">19</option>-->
+                        <!--<option value="20">20</option>-->
+                        <!--<option value="21">21</option>-->
+                        <!--<option value="22">22</option>-->
+                        <!--<option value="23">23</option>-->
+                    <!--</select>:-->
+                    <!--<select name='due-hour' class='span1'>-->
+                        <!--<option value="0">00</option>-->
+                        <!--<option value="5">05</option>-->
+                        <!--<option value="10">10</option>-->
+                        <!--<option value="15">15</option>-->
+                        <!--<option value="20">20</option>-->
+                        <!--<option value="25">25</option>-->
+                        <!--<option value="30">30</option>-->
+                        <!--<option value="35">35</option>-->
+                        <!--<option value="40">40</option>-->
+                        <!--<option value="45">45</option>-->
+                        <!--<option value="50">50</option>-->
+                        <!--<option value="55">55</option>-->
+                    <!--</select>-->
                     <button type="submit" class="btn btn-success btn-small">Save</button>
-                    <span class="help-inline"></span>
+                    <span class="help-block"></span>
                 </div>
-            </fieldset>
-        </form>
-        <a class="close">x</a>
-    </script>
+            </form>
+        </script>
 
-    <script type="text/template" id="tmpl-todo-form">
-        <form method="get" accept-charset="utf-8" class="form-inline">
-            <div class="control-group">
-                <input type="hidden" name="project-id" value="{project}" id="project-id">
-                <input type="text" name="todo-body" value="{body}" id="todo-body" placeholder="Enter a new todo item here" class="input-xlarge">
-                <!--<label class="checkbox inline"><input type="checkbox" value="1">Due date?</label>-->
-                <!--<select name='due-day' class='span1'>-->
-                    <!--<option value="1">01</option>-->
-                    <!--<option value="2">02</option>-->
-                    <!--<option value="3">03</option>-->
-                    <!--<option value="4">04</option>-->
-                    <!--<option value="5">05</option>-->
-                    <!--<option value="6">06</option>-->
-                    <!--<option value="7">07</option>-->
-                    <!--<option value="8">08</option>-->
-                    <!--<option value="9">09</option>-->
-                    <!--<option value="10">10</option>-->
-                    <!--<option value="11">11</option>-->
-                    <!--<option value="12">12</option>-->
-                    <!--<option value="13">13</option>-->
-                    <!--<option value="14">14</option>-->
-                    <!--<option value="15">15</option>-->
-                    <!--<option value="16">16</option>-->
-                    <!--<option value="17">17</option>-->
-                    <!--<option value="18">18</option>-->
-                    <!--<option value="19">19</option>-->
-                    <!--<option value="20">20</option>-->
-                    <!--<option value="21">21</option>-->
-                    <!--<option value="22">22</option>-->
-                    <!--<option value="23">23</option>-->
-                    <!--<option value="24">24</option>-->
-                    <!--<option value="25">25</option>-->
-                    <!--<option value="26">26</option>-->
-                    <!--<option value="27">27</option>-->
-                    <!--<option value="28">28</option>-->
-                    <!--<option value="29">29</option>-->
-                    <!--<option value="30">30</option>-->
-                    <!--<option value="31">31</option>-->
-                <!--</select>/-->
-                <!--<select name='due-month' class='span1'>-->
-                    <!--<option value="1">01</option>-->
-                    <!--<option value="2">02</option>-->
-                    <!--<option value="3">03</option>-->
-                    <!--<option value="4">04</option>-->
-                    <!--<option value="5">05</option>-->
-                    <!--<option value="6">06</option>-->
-                    <!--<option value="7">07</option>-->
-                    <!--<option value="8">08</option>-->
-                    <!--<option value="9">09</option>-->
-                    <!--<option value="10">10</option>-->
-                    <!--<option value="11">11</option>-->
-                    <!--<option value="12">12</option>-->
-                <!--</select>/-->
-                <!--<select name='due-year' class='input-mini'>-->
-                    <!--<option value="2012">2012</option>-->
-                    <!--<option value="2013">2013</option>-->
-                    <!--<option value="2014">2014</option>-->
-                    <!--<option value="2015">2015</option>-->
-                <!--</select>--->
-                <!--<select name='due-hour' class='span1'>-->
-                    <!--<option value="0">00</option>-->
-                    <!--<option value="1">01</option>-->
-                    <!--<option value="2">02</option>-->
-                    <!--<option value="3">03</option>-->
-                    <!--<option value="4">04</option>-->
-                    <!--<option value="5">05</option>-->
-                    <!--<option value="6">06</option>-->
-                    <!--<option value="7">07</option>-->
-                    <!--<option value="8">08</option>-->
-                    <!--<option value="9">09</option>-->
-                    <!--<option value="10">10</option>-->
-                    <!--<option value="11">11</option>-->
-                    <!--<option value="12">12</option>-->
-                    <!--<option value="13">13</option>-->
-                    <!--<option value="14">14</option>-->
-                    <!--<option value="15">15</option>-->
-                    <!--<option value="16">16</option>-->
-                    <!--<option value="17">17</option>-->
-                    <!--<option value="18">18</option>-->
-                    <!--<option value="19">19</option>-->
-                    <!--<option value="20">20</option>-->
-                    <!--<option value="21">21</option>-->
-                    <!--<option value="22">22</option>-->
-                    <!--<option value="23">23</option>-->
-                <!--</select>:-->
-                <!--<select name='due-hour' class='span1'>-->
-                    <!--<option value="0">00</option>-->
-                    <!--<option value="5">05</option>-->
-                    <!--<option value="10">10</option>-->
-                    <!--<option value="15">15</option>-->
-                    <!--<option value="20">20</option>-->
-                    <!--<option value="25">25</option>-->
-                    <!--<option value="30">30</option>-->
-                    <!--<option value="35">35</option>-->
-                    <!--<option value="40">40</option>-->
-                    <!--<option value="45">45</option>-->
-                    <!--<option value="50">50</option>-->
-                    <!--<option value="55">55</option>-->
-                <!--</select>-->
-                <button type="submit" class="btn btn-success btn-small">Save</button>
-                <span class="help-block"></span>
+        <script type="text/template" id="tmpl-modal">
+            <div class="fade modal">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">×</a>
+                    <h3>{title}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>{body|s}</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary">Save</a>
+                    <a href="#" class="btn cancel">Cancel</a>
+                </div>
             </div>
-        </form>
-    </script>
+        </script>
 
-    <script type="text/template" id="tmpl-modal">
-        <div class="fade modal">
-            <div class="modal-header">
-                <a class="close" data-dismiss="modal">×</a>
-                <h3>{title}</h3>
-            </div>
+        <script type="text/template" id="tmpl-plain-modal">
             <div class="modal-body">
+                <a class="close" data-dismiss="modal">×</a>
                 <p>{body|s}</p>
             </div>
-            <div class="modal-footer">
-                <a href="#" class="btn btn-primary">Save</a>
-                <a href="#" class="btn cancel">Cancel</a>
-            </div>
-        </div>
-    </script>
+        </script>
 
-    <script type="text/template" id="tmpl-plain-modal">
-        <div class="modal-body">
-            <a class="close" data-dismiss="modal">×</a>
-            <p>{body|s}</p>
-        </div>
-    </script>
+        <!-- END Templates -->
 
-    <!-- END Templates -->
+        <script src="js/libs/jquery-1.7.1.min.js"></script>
 
-    <script src="js/libs/jquery-1.7.1.min.js"></script>
+        <script src="js/libs/underscore.js"></script>
+        <script src="js/libs/backbone.js"></script>
+        <script src="js/libs/bootstrap.js"></script>
+        <script src="js/libs/dust-full-0.3.0.js"></script>
 
-    <script src="js/libs/underscore.js"></script>
-    <script src="js/libs/backbone.js"></script>
-    <script src="js/libs/bootstrap.js"></script>
-    <script src="js/libs/dust-full-0.3.0.js"></script>
-    <script src="js/app/backbone.localStorage.js"></script>
+        <script src="js/app/backbone.localStorage.js"></script>
+        <script src="js/app/mediator.js"></script>
 
-    <script src="js/app/mediator.js"></script>
+        <script src="js/app/projectModel.js"></script>
+        <script src="js/app/todoModel.js"></script>
 
-    <script src="js/app/models/projectModel.js"></script>
-    <script src="js/app/models/todoModel.js"></script>
-    <!--<script src="js/app/models/todoListModel.js"></script>-->
+        <script src="js/app/projectsCollection.js"></script>
+        <script src="js/app/todosCollection.js"></script>
 
-    <script src="js/app/collections/projectsCollection.js"></script>
-    <script src="js/app/collections/todosCollection.js"></script>
+        <script src="js/app/todoFormView.js"></script>
+        <script src="js/app/projectFormView.js"></script>
+        <script src="js/app/projectListProjectView.js"></script>
+        <script src="js/app/projectListView.js"></script>
+        <script src="js/app/projectView.js"></script>
+        <script src="js/app/todoView.js"></script>
+        <script src="js/app/appView.js"></script>
 
-    <script src="js/app/views/todoFormView.js"></script>
-    <script src="js/app/views/projectFormView.js"></script>
-    <script src="js/app/views/projectListView.js"></script>
-    <script src="js/app/views/projectView.js"></script>
-    <script src="js/app/views/todoView.js"></script>
-    <script src="js/app/views/appView.js"></script>
+        <script src="js/app/appRouter.js"></script>
 
-    <script src="js/app/routers/appRouter.js"></script>
-    <script src="js/app/routers/projectRouter.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/script.js"></script>
 
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
+        <!--<script>-->
+        <!--var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; // Change UA-XXXXX-X to be your site's ID-->
+        <!--(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;-->
+        <!--g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';-->
+        <!--s.parentNode.insertBefore(g,s)}(document,'script'));-->
+        <!--</script>-->
 
-    <!--<script>-->
-    <!--var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']]; // Change UA-XXXXX-X to be your site's ID-->
-    <!--(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;-->
-    <!--g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';-->
-    <!--s.parentNode.insertBefore(g,s)}(document,'script'));-->
-    <!--</script>-->
+        <!--[if lt IE 7 ]>
+        <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+        <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
+        <![endif]-->
 
-    <!--[if lt IE 7 ]>
-    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
-    <script>window.attachEvent("onload",function(){CFInstall.check({mode:"overlay"})})</script>
-    <![endif]-->
-
-</body>
+    </body>
 </html>

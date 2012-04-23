@@ -175,7 +175,7 @@ div[role=main] {
 .todo .edit {
     cursor: pointer;
     display: none;
-    margin-top: -7px;
+    margin-top: -9px;
     position: absolute;
     top: 50%;
 }
@@ -185,7 +185,7 @@ div[role=main] {
 }
 
 .todo .edit {
-    right: 25px;
+    right: 40px;
 }
 
 .todo:hover .delete,
